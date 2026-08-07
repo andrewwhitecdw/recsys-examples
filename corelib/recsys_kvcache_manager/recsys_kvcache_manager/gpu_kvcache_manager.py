@@ -216,8 +216,12 @@ class DeviceKVCache:
         offload_lengths: torch.Tensor,
         offloaded: bool,
     ) -> None:
+        batch_size = uids.size(0)
         return self.impl_.release_offload_pages(
-            uids, offload_start_indices, offload_lengths, offloaded
+            uids,
+            offload_start_indices,
+            offload_lengths,
+            [int(offloaded)] * batch_size,
         )
 
 
