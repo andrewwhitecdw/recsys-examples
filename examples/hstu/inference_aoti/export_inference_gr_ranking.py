@@ -106,8 +106,7 @@ def debug_print_flattened_export_args(batch, embeddings=None) -> None:
 def get_inference_dataset_and_embedding_configs(
     disable_contextual_features: bool = False,
 ):
-    sys.path.append("./training/")
-    from trainer.utils import create_embedding_configs, get_dataset_and_embedding_args
+    from trainer.utils import create_embedding_configs
 
     dataset_args, embedding_args = get_dataset_and_embedding_args()
     embedding_configs = create_embedding_configs(
