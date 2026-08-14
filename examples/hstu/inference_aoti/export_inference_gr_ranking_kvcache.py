@@ -766,7 +766,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Inference End-to-end Example")
     parser.add_argument("--gin_config_file", type=str, required=True)
     parser.add_argument("--checkpoint_dir", type=str, required=True)
-    parser.add_argument("--disable_auc", action="store_true")
     parser.add_argument("--max_bs", type=int, default=8)
     parser.add_argument(
         "--kvcache_config_file",
