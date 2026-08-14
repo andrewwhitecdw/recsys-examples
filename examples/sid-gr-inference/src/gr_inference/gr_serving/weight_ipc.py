@@ -212,7 +212,7 @@ class FlattenedTensorBucket:
 # Roots: a module is allowed if it equals a root or is a submodule
 # (root + "."), so "torch" covers "torch.Tensor" and "torch.storage.UntypedStorage".
 _ALLOWED_UNPICKLE_ROOTS = frozenset(
-    {
+    [
         "builtins",
         "collections",
         "copyreg",
@@ -226,7 +226,7 @@ _ALLOWED_UNPICKLE_ROOTS = frozenset(
         "numpy",
         "multiprocessing.reduction",
         "multiprocessing.resource_sharer",
-    }
+    ]
 )
 
 
