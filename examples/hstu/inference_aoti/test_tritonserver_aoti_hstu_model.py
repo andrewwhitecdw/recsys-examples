@@ -545,9 +545,6 @@ def main() -> int:
             f"{args.profile_jsonl}"
         )
 
-    # logits = result.as_numpy("OUTPUT__0")
-    # print(f"OUTPUT__0 logits: shape={logits.shape}, dtype={logits.dtype}")
-    # print(logits)
     return 0
 
 
