@@ -66,12 +66,13 @@ std::string infer_default_inference_emb_ops_path(const char* argv0) {
 
 std::string infer_default_kvcache_manager_ops_path(const char* argv0) {
   std::filesystem::path exe_path = std::filesystem::absolute(argv0);
+  const std::filesystem::path repo_root = infer_repo_root(argv0);
   const std::vector<std::filesystem::path> candidates = {
       exe_path.parent_path() / "kvcache_manager_ops.so",
       "/usr/local/lib/python3.12/dist-packages/recsys_kvcache_manager/kvcache_manager_ops.so",
-      std::filesystem::path(infer_repo_root(argv0)) /
+      repo_root /
           "corelib/recsys_kvcache_manager/build/kvcache_manager_ops.so",
-      std::filesystem::path(infer_repo_root(argv0)) /
+      repo_root /
           "corelib/recsys_kvcache_manager/kvcache_manager_ops.so",
   };
 
@@ -93,12 +94,13 @@ std::string infer_default_hstu_runtime_ops_path(const char* argv0) {
 
 std::string infer_default_paged_kvcache_ops_path(const char* argv0) {
   std::filesystem::path exe_path = std::filesystem::absolute(argv0);
+  const std::filesystem::path repo_root = infer_repo_root(argv0);
   const std::vector<std::filesystem::path> candidates = {
       exe_path.parent_path() / "libpaged_kvcache_ops_runtime.so",
       "/usr/local/lib/python3.12/dist-packages/paged_kvcache_ops.cpython-312-x86_64-linux-gnu.so",
-      std::filesystem::path(infer_repo_root(argv0)) /
+      repo_root /
           "examples/commons/paged_kvcache_ops.cpython-312-x86_64-linux-gnu.so",
-      std::filesystem::path(infer_repo_root(argv0)) /
+      repo_root /
           "examples/commons/build/lib.linux-x86_64-cpython-312/paged_kvcache_ops.cpython-312-x86_64-linux-gnu.so",
   };
 
