@@ -166,6 +166,11 @@ std::vector<at::Tensor> permute_and_split_impl(
   }
   TORCH_CHECK(num_features == features_order.size(), "features_order size must match total number of features");
 
+  for (const auto feature_idx : features_order) {
+    TORCH_CHECK(feature_idx >= 0 && feature_idx < num_features,
+                "features_order contains invalid index: ", feature_idx);
+  }
+
   const int64_t batch = jagged_lengths.numel() / num_features;
 
   std::vector<at::Tensor> permuted_lengths_vec(num_features);
