@@ -519,6 +519,8 @@ def _linear_project(linear, hidden_states, *, out=None):
         flat_input = hidden_states.reshape(-1, hidden_states.shape[-1])
         out_flat = out.reshape(-1, out.shape[-1])
         torch.matmul(flat_input, linear.weight.t(), out=out_flat)
+        if linear.bias is not None:
+            out_flat.add_(linear.bias)
         return out
     if (
         _flatten_linear_disabled()
