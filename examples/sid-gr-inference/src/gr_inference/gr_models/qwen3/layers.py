@@ -341,10 +341,6 @@ if nn is not None:
         def post_attention_norm(self, hidden_states):
             return self.post_attention_layernorm(hidden_states)
 
-        def post_attention_residual_norm(self, residual, attention_output):
-            projected = self.o_proj(attention_output)
-            return self.post_attention_residual_norm_projected(residual, projected)
-
         def post_attention_residual_norm_projected(self, residual, projected):
             fused_add_rmsnorm = _flashinfer_fused_add_rmsnorm()
             if (
