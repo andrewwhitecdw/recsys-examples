@@ -36,11 +36,16 @@ std::vector<at::Tensor> split_by_lengths_impl(
   return out;
 }
 
-std::vector<at::Tensor> split_by_lengths_cpu(
+void split_by_lengths_check(
     const at::Tensor& values,
     const at::Tensor& lengths_1d,
-    int64_t num_splits) {
-  TORCH_CHECK(values.device().is_cpu(), "values must be a CPU tensor");
+    int64_t num_splits,
+    bool expect_cuda) {
+  if (expect_cuda) {
+    TORCH_CHECK(values.is_cuda(), "values must be a CUDA tensor");
+  } else {
+    TORCH_CHECK(values.device().is_cpu(), "values must be a CPU tensor");
+  }
   TORCH_CHECK(
       lengths_1d.device().is_cpu() || lengths_1d.is_cuda(),
       "lengths_1d must be CPU or CUDA, got ", lengths_1d.device());
@@ -52,7 +57,13 @@ std::vector<at::Tensor> split_by_lengths_cpu(
   TORCH_CHECK(
       lengths_1d.numel() % num_splits == 0,
       "lengths_1d.numel()=", lengths_1d.numel(), " must be divisible by num_splits=", num_splits);
+}
 
+std::vector<at::Tensor> split_by_lengths_cpu(
+    const at::Tensor& values,
+    const at::Tensor& lengths_1d,
+    int64_t num_splits) {
+  split_by_lengths_check(values, lengths_1d, num_splits, /*expect_cuda=*/false);
   return split_by_lengths_impl(values, lengths_1d, num_splits);
 }
 
@@ -60,19 +71,7 @@ std::vector<at::Tensor> split_by_lengths_cuda(
     const at::Tensor& values,
     const at::Tensor& lengths_1d,
     int64_t num_splits) {
-  TORCH_CHECK(values.device().is_cuda(), "values must be a CUDA tensor");
-  TORCH_CHECK(
-      lengths_1d.device().is_cpu() || lengths_1d.is_cuda(),
-      "lengths_1d must be CPU or CUDA, got ", lengths_1d.device());
-  TORCH_CHECK(
-      values.dim() == 1 || values.dim() == 2,
-      "values must be 1D or 2D, got dim=", values.dim());
-  TORCH_CHECK(lengths_1d.dim() == 1, "lengths_1d must be 1D, got dim=", lengths_1d.dim());
-  TORCH_CHECK(num_splits > 0, "num_splits must be > 0");
-  TORCH_CHECK(
-      lengths_1d.numel() % num_splits == 0,
-      "lengths_1d.numel()=", lengths_1d.numel(), " must be divisible by num_splits=", num_splits);
-
+  split_by_lengths_check(values, lengths_1d, num_splits, /*expect_cuda=*/true);
   return split_by_lengths_impl(values, lengths_1d, num_splits);
 }
 
