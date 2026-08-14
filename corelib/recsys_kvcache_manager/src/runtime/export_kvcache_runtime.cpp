@@ -316,13 +316,14 @@ std::vector<at::Tensor> ExportKVCacheRuntime::onboard_kvcache_launch(
     }
 
     at::Tensor kv_page_indices_cpu = kv_page_indices.cpu();
+    at::Tensor kv_page_indptr_cpu = kv_page_indptr.cpu();
     std::vector<at::Tensor> slot_mappings;
     slot_mappings.reserve(batch_size);
     for (int seq_idx = 0; seq_idx < batch_size; seq_idx++) {
         const auto seqlen = seqlens_ptr[seq_idx];
         auto page_ids =
-            kv_page_indices_cpu.slice(0, kv_page_indptr[seq_idx].item<int>(),
-                                      kv_page_indptr[seq_idx + 1].item<int>());
+            kv_page_indices_cpu.slice(0, kv_page_indptr_cpu[seq_idx].item<int>(),
+                                      kv_page_indptr_cpu[seq_idx + 1].item<int>());
 
         if (page_ids.numel() > 0) {
             auto slot_mapping = page_ids.unsqueeze(1) *
