@@ -789,7 +789,7 @@ def _top_beam_token_ids(
         ):
             return tuple(int(token) for token in first["token_ids"][:max_new_tokens])
     if response.token_ids:
-        return (int(response.token_ids[0]),) * max_new_tokens
+        return tuple(int(token) for token in response.token_ids[:max_new_tokens])
     return ()
 
 
