@@ -23,13 +23,13 @@
 
 #include <utility>
 
-#define cudaCheck(ans) { cudaSuccesAssert((ans), __FILE__, __LINE__); }
-inline void cudaSuccesAssert(cudaError_t code, const char *file, int line, bool abort=true)
+#define cudaCheck(ans) do { cudaSuccessAssert((ans), __FILE__, __LINE__); } while (0)
+inline void cudaSuccessAssert(cudaError_t code, const char *file, int line)
 {
    if (code != cudaSuccess) 
    {
       fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
+      exit(code);
    }
 }
 
