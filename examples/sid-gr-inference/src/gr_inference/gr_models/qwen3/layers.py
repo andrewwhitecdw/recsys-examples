@@ -987,6 +987,11 @@ def _torch_prefill_extend_attention(q, k, v, *, prefix_len: int):
     batch, suffix_len, num_q_heads, _head_dim = q.shape
     total_len = k.shape[1]
     num_kv_heads = k.shape[2]
+    if num_q_heads % num_kv_heads != 0:
+        raise ValueError(
+            f"num_attention_heads ({num_q_heads}) must be divisible by "
+            f"num_kv_heads ({num_kv_heads})"
+        )
     qhead_per_kv = num_q_heads // num_kv_heads
     if qhead_per_kv != 1:
         k = k.repeat_interleave(qhead_per_kv, dim=2)
