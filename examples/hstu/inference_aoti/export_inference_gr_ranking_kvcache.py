@@ -401,6 +401,11 @@ def export_inference_gr_ranking(
     stop_after_warmup: bool = False,
     kvcache_config_file: Optional[str] = None,
 ):
+    if max_bs <= 1:
+        raise ValueError(
+            "max_bs must be greater than 1 for torch.export to capture dynamic shapes"
+        )
+
     def _split_model_outputs(outputs):
         if isinstance(outputs, torch.Tensor):
             return outputs, None
