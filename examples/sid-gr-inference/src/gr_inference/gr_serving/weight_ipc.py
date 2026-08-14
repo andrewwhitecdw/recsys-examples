@@ -157,6 +157,7 @@ class FlattenedTensorBucket:
 
     def __init__(self, flattened_tensor=None, metadata=None, named_tensors=None):
         if named_tensors is not None:
+            named_tensors = list(named_tensors)
             if not named_tensors:
                 raise ValueError("Cannot create empty tensor bucket")
             current = 0
