@@ -278,6 +278,10 @@ class MultiprocessingSerializer:
     @staticmethod
     def deserialize(data):
         monkey_patch_torch_reductions()
+        if not isinstance(data, (str, bytes)):
+            raise TypeError(
+                f"deserialize expects str or bytes, got {type(data).__name__}"
+            )
         if isinstance(data, str):
             data = base64.b64decode(data, validate=True)
         return _WeightUnpickler(io.BytesIO(data)).load()
