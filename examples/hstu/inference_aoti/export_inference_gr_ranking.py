@@ -510,8 +510,6 @@ def export_inference_gr_ranking(
         for item in results:
             del item
 
-        import time
-
         python_time = []
         for _ in range(3):
             torch.cuda.synchronize()
