@@ -87,6 +87,8 @@ if nn is not None:
             device: Any | None = None,
             dtype: Any | None = None,
         ) -> ContextKV:
+            if batch_size <= 0:
+                raise ValueError("batch_size must be positive")
             if context_len <= 0:
                 raise ValueError("context_len must be positive")
             if context_len > self.config.max_context_len:
