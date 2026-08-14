@@ -945,6 +945,11 @@ def _write_context_kv_suffix(
     k,
     v,
 ) -> None:
+    if k.shape != v.shape:
+        raise ValueError(
+            f"k/v shape mismatch for layer {layer_idx}: "
+            f"k {tuple(k.shape)}, v {tuple(v.shape)}"
+        )
     suffix_len = int(k.shape[1])
     key_slice = context_kv.key[
         layer_idx,
@@ -956,6 +961,16 @@ def _write_context_kv_suffix(
         :,
         prefix_len : prefix_len + suffix_len,
     ]
+    if key_slice.shape != k.shape:
+        raise ValueError(
+            f"k shape mismatch for layer {layer_idx}: "
+            f"expected {tuple(key_slice.shape)}, got {tuple(k.shape)}"
+        )
+    if value_slice.shape != v.shape:
+        raise ValueError(
+            f"v shape mismatch for layer {layer_idx}: "
+            f"expected {tuple(value_slice.shape)}, got {tuple(v.shape)}"
+        )
     key_slice.copy_(k)
     value_slice.copy_(v)
 
