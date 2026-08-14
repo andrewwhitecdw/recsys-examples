@@ -300,8 +300,12 @@ def reconstruct_named_tensors(
     monkey_patch_torch_reductions()
     if not serialized_named_tensors:
         return []
-    index = tp_rank if tp_rank < len(serialized_named_tensors) else 0
-    decoded = MultiprocessingSerializer.deserialize(serialized_named_tensors[index])
+    num_ranks = len(serialized_named_tensors)
+    if tp_rank < 0 or tp_rank >= num_ranks:
+        raise ValueError(
+            f"tp_rank {tp_rank} out of range for {num_ranks} rank(s)"
+        )
+    decoded = MultiprocessingSerializer.deserialize(serialized_named_tensors[tp_rank])
     if load_format == "flattened_bucket":
         bucket = FlattenedTensorBucket(
             flattened_tensor=decoded["flattened_tensor"],
