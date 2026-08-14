@@ -1333,9 +1333,8 @@ def test_http_serving_launcher_exposes_production_env_knobs() -> None:
         Path(__file__).resolve().parents[1] / "scripts" / "serve_qwen3_gr_http.sh"
     )
 
+    assert launcher.exists(), f"launcher script missing: {launcher}"
     text = launcher.read_text(encoding="utf-8")
-
-    assert launcher.exists()
     assert "--max-http-waiting-requests" in text
     assert "--max-http-timeout-ticks" in text
     assert "--max-finished-requests" in text
@@ -1352,10 +1351,12 @@ def test_container_artifacts_wire_serving_launcher() -> None:
     dockerfile = root / "Dockerfile"
     dockerignore = root / ".dockerignore"
 
+    assert dockerfile.exists(), f"Dockerfile missing: {dockerfile}"
     dockerfile_text = dockerfile.read_text(encoding="utf-8")
+
+    assert dockerignore.exists(), f".dockerignore missing: {dockerignore}"
     dockerignore_text = dockerignore.read_text(encoding="utf-8")
 
-    assert dockerfile.exists()
     assert "INSTALL_KERNEL_DEPS" in dockerfile_text
     assert 'ENTRYPOINT ["scripts/serve_qwen3_gr_http.sh"]' in dockerfile_text
     assert "EXPOSE 8000" in dockerfile_text
