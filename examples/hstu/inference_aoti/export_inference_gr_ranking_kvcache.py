@@ -627,11 +627,6 @@ def export_inference_gr_ranking(
                 total_history_lengths_cuda,
             )
 
-            with torch.inference_mode():
-                rebuilt_batch = export_model._rebuild_batch(
-                    example_values, example_lengths, example_num_candidates
-                )
-
             # get dynamic shapes (now keyed on the plain tensor inputs)
             sc = ShapesCollection()
             dim_batch = Dim("batch_size", min=1, max=8)
