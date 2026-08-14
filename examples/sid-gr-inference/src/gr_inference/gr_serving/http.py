@@ -997,10 +997,11 @@ def _runtime_error_response(exc: RuntimeError) -> GRHTTPResponse:
             code="duplicate_request_id",
             retryable=False,
         )
+    # Unknown RuntimeErrors are engine/infrastructure failures, not client conflicts.
     return _structured_error_response(
-        409,
+        500,
         message,
-        code="conflict",
+        code="internal_server_error",
         retryable=False,
     )
 
