@@ -564,7 +564,7 @@ std::tuple<at::Tensor, at::Tensor, std::vector<at::Tensor>> GPUKVCacheManagerImp
 
             offload_page_ids_list.push_back(at::from_blob(
                 this->_uid_to_page_id[uid].data(), {this->_uid_to_page_id[uid].size()}, at::dtype(torch::kInt32)
-            ));
+            ).clone());
             this->_uid_offload_lock[uid] += 1;
         }
         return std::make_tuple(
@@ -601,7 +601,7 @@ std::tuple<at::Tensor, at::Tensor, std::vector<at::Tensor>> GPUKVCacheManagerImp
                     this->_uid_to_page_id[uid].data() + pages_offload_start, 
                     {pages_offload_num}, 
                     at::dtype(torch::kInt32)
-                )  // this is a slice of the _uid_to_page_id[uid] in gpu_kvcache_mgr, which will be locked during offloading.
+                ).clone()  // own a copy; the underlying vector may be reassigned while offloading.
             );
         }
         this->_uid_offload_lock[uid] += 1;
