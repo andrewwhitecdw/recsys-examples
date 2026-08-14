@@ -125,7 +125,10 @@ class GRInProcessServingFacade:
         return status
 
     def metrics(self) -> dict[str, float | int]:
-        return self.executor.metrics()
+        method = getattr(self.executor, "metrics", None)
+        if method is None:
+            raise RuntimeError("metrics requires a serving engine")
+        return method()
 
     def catalog_status(self) -> dict[str, Any] | None:
         if self.item_mask_provider_store is None:
