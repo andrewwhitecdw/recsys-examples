@@ -163,7 +163,11 @@ class TritonPythonModel:
             raise ValueError(
                 f"INPUT__2 exceeds max_num_candidates={self._max_num_candidates}"
             )
-        return batch_size
+        if not (num_candidates == num_candidates[0]).all():
+            raise ValueError(
+                "INPUT__2 must contain identical candidate counts per batch"
+            )
+        return batch_size, int(num_candidates[0])
 
     def execute(self, requests):
         responses = []
@@ -178,7 +182,7 @@ class TritonPythonModel:
                 num_candidates_numpy = pb_utils.get_input_tensor_by_name(
                     request, "INPUT__2"
                 ).as_numpy()
-                batch_size = self._validate_numpy_inputs(
+                batch_size, num_candidates = self._validate_numpy_inputs(
                     values_numpy, lengths_numpy, num_candidates_numpy
                 )
 
@@ -188,10 +192,6 @@ class TritonPythonModel:
                 lengths = torch.from_numpy(lengths_numpy).to(
                     device=self._device, dtype=torch.int64
                 )
-                num_candidates = torch.from_numpy(num_candidates_numpy).to(
-                    device=self._device, dtype=torch.int64
-                )
-
                 batch = self._make_batch(values, lengths, num_candidates, batch_size)
                 with torch.inference_mode():
                     logits = self._model(batch).float().cpu().numpy()
