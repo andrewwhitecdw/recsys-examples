@@ -276,6 +276,8 @@ class GRInProcessServingFacade:
 
     def _ensure_request_ids_available(self, request_ids: tuple[str, ...]) -> None:
         states = getattr(self._scheduler(), "states", {})
+        if states is None:
+            states = {}
         conflicts = [request_id for request_id in request_ids if request_id in states]
         if conflicts:
             raise RuntimeError(f"duplicate request_id: {conflicts[0]}")
