@@ -92,6 +92,8 @@ class DeviceKVCache:
             user_ids=uids,
             gpu_cached_start_indices=cached_start_indices,
             gpu_cached_lengths=cached_lengths,
+            host_cached_start_indices=torch.zeros_like(cached_start_indices),
+            host_cached_lengths=torch.zeros_like(cached_lengths),
         )
 
     def allocate(
