@@ -1383,7 +1383,7 @@ def test_sweep_real_weight_serving_helpers() -> None:
     assert "--beam-width" in command
     assert "128" in command
     assert "--requests" in command
-    assert "2" in command
+    assert command[command.index("--requests") + 1] == "2"
     assert "--beam-score-mode" in command
     assert "logprob" in command
     assert "--continuous" in command
