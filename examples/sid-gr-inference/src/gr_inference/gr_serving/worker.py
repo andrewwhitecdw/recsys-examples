@@ -44,12 +44,12 @@ class GRServingWorker:
     _worker_batch_fill_waits: int = field(default=0, init=False)
 
     def __post_init__(self) -> None:
-        if self.tick_interval_s < 0:
-            raise ValueError("tick_interval_s must be non-negative")
-        if self.idle_sleep_s < 0:
-            raise ValueError("idle_sleep_s must be non-negative")
-        if self.error_sleep_s < 0:
-            raise ValueError("error_sleep_s must be non-negative")
+        if self.tick_interval_s <= 0:
+            raise ValueError("tick_interval_s must be positive")
+        if self.idle_sleep_s <= 0:
+            raise ValueError("idle_sleep_s must be positive")
+        if self.error_sleep_s <= 0:
+            raise ValueError("error_sleep_s must be positive")
         if self.decode_log_interval < 0:
             raise ValueError("decode_log_interval must be non-negative")
         if self.autostart:
