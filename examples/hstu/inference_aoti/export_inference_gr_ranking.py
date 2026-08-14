@@ -92,15 +92,7 @@ def debug_print_flattened_export_args(batch, embeddings=None) -> None:
         else:
             print(f"    [{i}] {type(leaf).__name__}: {leaf}")
 
-    # print(f"\nEmbeddings dict keys (order): {list(embeddings.keys())}")
-    # print(f"Embeddings flattened count: {len(flat_leaves) - len(batch_flat)}")
-    # embeddings_flat, _ = pytree.tree_flatten(embeddings)
-    # for i, leaf in enumerate(embeddings_flat):
-    #     if isinstance(leaf, torch.Tensor):
-    #         print(f"    [{i}] Tensor: shape={leaf.shape}, dtype={leaf.dtype}")
-    #     else:
-    #         print(f"    [{i}] {type(leaf).__name__}: {leaf}")
-    # print("===== END FLATTENED DEBUG =====\n")
+    print("===== END FLATTENED DEBUG =====\n")
 
 
 def get_inference_dataset_and_embedding_configs(
