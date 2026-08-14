@@ -426,7 +426,6 @@ if nn is not None:
             )
 
         def silu_mul(self, gate, up):
-            _selected_kernel_backend(CAP_FUSED_MLP)
             return torch.nn.functional.silu(gate) * up
 
         def down_proj_only(self, hidden_states):
