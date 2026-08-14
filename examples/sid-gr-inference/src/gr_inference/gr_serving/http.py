@@ -889,7 +889,7 @@ def _query_params(path: str) -> dict[str, str]:
 
 
 def _json_payload(body: bytes | str | Mapping[str, Any] | None) -> Mapping[str, Any]:
-    if body is None or body == b"" or body == "":
+    if body is None or (isinstance(body, (str, bytes)) and not body):
         return {}
     if isinstance(body, Mapping):
         return body
