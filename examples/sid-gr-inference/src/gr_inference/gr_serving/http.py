@@ -524,8 +524,12 @@ class GRHTTPServingAdapter:
         body: bytes | str | Mapping[str, Any] | None,
     ) -> None:
         limit = self.validation_policy.max_request_bytes
-        if limit is None or body is None or isinstance(body, Mapping):
+        if limit is None or body is None:
             return
+        # Tests may pass a deserialized Mapping; serialize to bytes so the
+        # same limit applies to bytes, str, and Mapping inputs.
+        if isinstance(body, Mapping):
+            body = json.dumps(_jsonable(body)).encode("utf-8")
         size = len(body if isinstance(body, bytes) else body.encode("utf-8"))
         if size > limit:
             raise GRHTTPAdapterError(
