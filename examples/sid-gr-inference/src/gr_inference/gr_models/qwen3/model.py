@@ -182,7 +182,18 @@ if nn is not None:
             last_token_logits_only: bool = False,
         ):
             batch_size, context_len = input_ids.shape
-            if context_kv is None:
+            if context_kv is not None:
+                if context_kv.context_len != context_len:
+                    raise ValueError(
+                        f"context_kv.context_len={context_kv.context_len} does not match "
+                        f"input_ids length {context_len}"
+                    )
+                if context_kv.batch_size != batch_size:
+                    raise ValueError(
+                        f"context_kv.batch_size={context_kv.batch_size} does not match "
+                        f"input_ids batch_size {batch_size}"
+                    )
+            else:
                 context_kv = self.allocate_context_kv(
                     batch_size=batch_size,
                     context_len=context_len,
@@ -242,6 +253,11 @@ if nn is not None:
                 )
             elif context_kv.context_len != context_len:
                 raise ValueError("context_kv length must equal prefix + suffix length")
+            elif context_kv.batch_size != batch_size:
+                raise ValueError(
+                    f"context_kv.batch_size={context_kv.batch_size} does not match "
+                    f"suffix_input_ids batch_size={batch_size}"
+                )
             _copy_context_prefix(context_kv, prefix_context_kv)
             with _timed(timing_recorder, "model.forward_prefill_extend"):
                 with _timed(timing_recorder, "prefill_extend.embed_tokens"):
