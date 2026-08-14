@@ -85,18 +85,24 @@ def monkey_patch_torch_reductions() -> None:
     _PATCHED = True
 
 
-def _device_to_uuid(device: int) -> str:
-    return str(torch.cuda.get_device_properties(device).uuid)
+def _device_to_uuid(device: int) -> bytes:
+    return torch.cuda.get_device_properties(device).uuid
 
 
 def _device_from_maybe_uuid(device: Any) -> int:
     if isinstance(device, int):
         return device
+    if isinstance(device, bytes):
+        for candidate in range(torch.cuda.device_count()):
+            if torch.cuda.get_device_properties(candidate).uuid == device:
+                return candidate
+        raise ValueError(f"unknown cuda device uuid: {device!r}")
     if isinstance(device, str):
+        # Backward compatibility with pre-fix str(bytes) payloads.
         for candidate in range(torch.cuda.device_count()):
             if str(torch.cuda.get_device_properties(candidate).uuid) == device:
                 return candidate
-        raise ValueError(f"unknown cuda device uuid: {device}")
+        raise ValueError(f"unknown cuda device uuid: {device!r}")
     raise TypeError(f"unexpected device specifier: {device!r}")
 
 
