@@ -14,9 +14,14 @@ import triton_python_backend_utils as pb_utils
 
 def _parameter(model_config, name):
     try:
-        return model_config["parameters"][name]["string_value"]
+        param = model_config["parameters"][name]
     except KeyError as error:
         raise ValueError(f"Missing required Triton model parameter: {name}") from error
+    if not isinstance(param, dict) or "string_value" not in param:
+        raise ValueError(
+            f"Malformed Triton model parameter: {name}; expected a dict with 'string_value'"
+        )
+    return param["string_value"]
 
 
 class TritonPythonModel:
