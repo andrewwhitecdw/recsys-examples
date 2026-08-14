@@ -507,10 +507,7 @@ def export_inference_gr_ranking(
             "ms/logical request"
         )
 
-        for item in results:
-            del item
-
-        import time
+        results.clear()
 
         python_time = []
         for _ in range(3):
@@ -533,8 +530,7 @@ def export_inference_gr_ranking(
             "ms/logical request"
         )
 
-        for item in results:
-            del item
+        results.clear()
 
 
 if __name__ == "__main__":
