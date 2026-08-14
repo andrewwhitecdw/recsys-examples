@@ -678,7 +678,7 @@ def default_request_factory(payload: Mapping[str, Any]) -> GRServingRequest:
             payload,
             max_beam_width=beam_width,
         ),
-        stop_token_ids=tuple(int(token) for token in payload.get("stop_token_ids", ())),
+        stop_token_ids=tuple(int(token) for token in (payload.get("stop_token_ids") or ())),
         logits_processors=logits_processors_from_specs(
             payload.get("logits_processors")
         ),
@@ -716,7 +716,7 @@ def _sglang_generate_payload_to_gr_payload(
         "max_decode_steps": gr_decode_steps,
         "beam_width": beam_width,
         "stop_token_ids": tuple(
-            int(token) for token in sampling_params.get("stop_token_ids", ())
+            int(token) for token in (sampling_params.get("stop_token_ids") or ())
         ),
         "logits_processors": payload.get("logits_processors", ()),
         "metadata": {
