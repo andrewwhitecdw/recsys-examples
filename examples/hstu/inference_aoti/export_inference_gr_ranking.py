@@ -74,7 +74,7 @@ class RunningMode(enum.Enum):
         return self.value
 
 
-def debug_print_flattened_export_args(batch, embeddings=None) -> None:
+def debug_print_flattened_export_args(batch) -> None:
     from torch.utils import _pytree as pytree
 
     print("\n===== FLATTENED EXPORT ARGS DEBUG =====")
@@ -92,15 +92,7 @@ def debug_print_flattened_export_args(batch, embeddings=None) -> None:
         else:
             print(f"    [{i}] {type(leaf).__name__}: {leaf}")
 
-    # print(f"\nEmbeddings dict keys (order): {list(embeddings.keys())}")
-    # print(f"Embeddings flattened count: {len(flat_leaves) - len(batch_flat)}")
-    # embeddings_flat, _ = pytree.tree_flatten(embeddings)
-    # for i, leaf in enumerate(embeddings_flat):
-    #     if isinstance(leaf, torch.Tensor):
-    #         print(f"    [{i}] Tensor: shape={leaf.shape}, dtype={leaf.dtype}")
-    #     else:
-    #         print(f"    [{i}] {type(leaf).__name__}: {leaf}")
-    # print("===== END FLATTENED DEBUG =====\n")
+    print("===== END FLATTENED DEBUG =====\n")
 
 
 def get_inference_dataset_and_embedding_configs(
@@ -367,8 +359,7 @@ def export_inference_gr_ranking(
         print(f"[INFO] Dynamic shapes: {dynamic_shapes}")
 
         if debug_flattened_inputs:
-            embeddings = None  # Placeholder for embeddings
-            debug_print_flattened_export_args(batch, embeddings)
+            debug_print_flattened_export_args(batch)
 
         # export & aoti_compile_and_package
         export_dir = os.path.join(os.path.dirname(__file__), "hstu_gr_ranking_model")
