@@ -456,8 +456,9 @@ def test_real_weight_serving_writes_summary_json(tmp_path) -> None:
 
     _write_summary_json({"wall_ms_median": 1.5, "samples": (1, 2)}, str(output_json))
 
-    assert output_json.read_text(encoding="utf-8")
-    assert '"wall_ms_median": 1.5' in output_json.read_text(encoding="utf-8")
+    payload = output_json.read_text(encoding="utf-8")
+    assert payload
+    assert '"wall_ms_median": 1.5' in payload
 
 
 def test_real_weight_serving_writes_verbose_beam_path_json(tmp_path) -> None:
