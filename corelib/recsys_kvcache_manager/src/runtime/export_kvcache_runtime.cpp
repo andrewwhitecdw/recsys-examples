@@ -2,6 +2,7 @@
 #include "kvcache_runtime_config.h"
 
 #include <ATen/ATen.h>
+#include <chrono>
 #include <iostream>
 #include <nvtx3/nvtx3.hpp>
 #include <string>
