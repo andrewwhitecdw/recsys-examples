@@ -41,7 +41,12 @@ def _copy_context_prefix(context_kv: ContextKV, prefix_context_kv: ContextKV) ->
 
 
 def _decode_next_input_norm_fusion_enabled() -> bool:
-    return os.environ.get("GR_INFERENCE_DECODE_NEXT_INPUT_NORM_FUSION") == "1"
+    return os.environ.get("GR_INFERENCE_DECODE_NEXT_INPUT_NORM_FUSION", "").lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
 
 
 if nn is not None:
