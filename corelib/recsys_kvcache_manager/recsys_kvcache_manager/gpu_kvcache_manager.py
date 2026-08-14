@@ -150,7 +150,7 @@ class DeviceKVCache:
         assert (
             k.shape == v.shape
         ), f"key and value shape mismatch: {k.shape} vs {v.shape}"
-        if k.size(0) == self.num_layers:
+        if k.dim() == 5:
             raise NotImplementedError("Only support layer-wise in this implementation.")
         kv_cache_table = self.gpu_kvcache_tables[layer_idx]
         (paged_k_cache, _) = kv_cache_table.unbind(dim=1)
