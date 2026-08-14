@@ -17,7 +17,7 @@ std::vector<at::Tensor> split_by_lengths_impl(
   at::Tensor lengths_i64_cpu = lengths_1d.to(at::kCPU, at::kLong).reshape({num_splits, batch});
   at::Tensor per_split_sizes_cpu = lengths_i64_cpu.sum(/*dim=*/1); // [num_splits] on CPU
 
-    const int64_t total_values = values.size(0);
+  const int64_t total_values = values.size(0);
   const int64_t total_split_sizes = per_split_sizes_cpu.sum().item<int64_t>();
   TORCH_CHECK(
       total_split_sizes == total_values,
