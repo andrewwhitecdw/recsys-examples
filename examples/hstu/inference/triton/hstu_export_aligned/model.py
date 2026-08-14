@@ -22,6 +22,7 @@ def _parameter(model_config, name):
 class TritonPythonModel:
     def initialize(self, args):
         self._model_config = json.loads(args["model_config"])
+        self._gin_config_parsed = False
         self._device = torch.device(f"cuda:{args['model_instance_device_id']}")
         torch.cuda.set_device(self._device)
 
@@ -68,6 +69,7 @@ class TritonPythonModel:
 
         # Importing the exporter registers the Gin-configurable HSTU classes.
         gin.parse_config_file(str(gin_config))
+        self._gin_config_parsed = True
 
         (
             dataset_args,
@@ -217,4 +219,5 @@ class TritonPythonModel:
                 self._cleanup_distributed()
             except Exception as error:
                 print(f"[hstu_export_aligned] distributed cleanup warning: {error}")
-        gin.clear_config()
+        if getattr(self, "_gin_config_parsed", False):
+            gin.clear_config()
