@@ -151,6 +151,7 @@ class GRServingWorker:
                 timeout_unfinished=timeout_unfinished,
             )
         self.stop(timeout=stop_timeout_s)
+        result = dict(result)
         result["worker"] = self.worker_status()
         return result
 
