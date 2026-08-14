@@ -1352,10 +1352,11 @@ def test_container_artifacts_wire_serving_launcher() -> None:
     dockerfile = root / "Dockerfile"
     dockerignore = root / ".dockerignore"
 
+    assert dockerfile.exists()
+    assert dockerignore.exists()
     dockerfile_text = dockerfile.read_text(encoding="utf-8")
     dockerignore_text = dockerignore.read_text(encoding="utf-8")
 
-    assert dockerfile.exists()
     assert "INSTALL_KERNEL_DEPS" in dockerfile_text
     assert 'ENTRYPOINT ["scripts/serve_qwen3_gr_http.sh"]' in dockerfile_text
     assert "EXPOSE 8000" in dockerfile_text
