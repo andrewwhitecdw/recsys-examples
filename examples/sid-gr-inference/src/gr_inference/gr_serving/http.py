@@ -127,9 +127,10 @@ class GRHTTPServingAdapter:
             self._validate_auth(method, route, headers or {})
             self._validate_body_size(body)
             payload = _json_payload(body)
-            if not payload:
+            if method == "GET" and not payload:
                 # GET routes (e.g. /get_weights_by_name?name=...) carry args in the
-                # query string rather than a JSON body.
+                # query string rather than a JSON body. POST routes with an empty
+                # body must not inherit query-string arguments.
                 payload = _query_params(path)
             response = self._dispatch(method, route, payload)
         except GRHTTPAdapterError as exc:
