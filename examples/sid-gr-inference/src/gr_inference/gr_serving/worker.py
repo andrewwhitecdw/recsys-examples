@@ -136,6 +136,7 @@ class GRServingWorker:
 
     def drain(self) -> dict[str, Any]:
         with self._lock:
+            self._drain_pending_submissions_unlocked()
             return self.facade.drain()
 
     def shutdown(
@@ -146,6 +147,7 @@ class GRServingWorker:
         stop_timeout_s: float | None = 2.0,
     ) -> dict[str, Any]:
         with self._lock:
+            self._drain_pending_submissions_unlocked()
             result = self.facade.shutdown(
                 max_ticks=max_ticks,
                 timeout_unfinished=timeout_unfinished,
