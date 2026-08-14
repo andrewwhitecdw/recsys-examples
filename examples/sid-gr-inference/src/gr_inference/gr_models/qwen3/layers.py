@@ -266,6 +266,11 @@ if nn is not None:
                 )
                 if fused_output is not None:
                     return fused_output
+            # The trtllm fused path was not taken or did not produce roped keys
+            # in-place. Drop the cached raw qkv so that the prefill KV write
+            # falls back to the roped q/k views instead of writing stale,
+            # unroped keys.
+            self._last_qkv_for_trtllm_qk_norm_rope = None
             if _apply_sglang_fused_qknorm(
                 q,
                 k,
