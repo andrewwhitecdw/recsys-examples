@@ -181,6 +181,28 @@ struct DemoConfig {
   std::string kvcache_manager_ops_path;
 };
 
+int parse_int_arg(const char* value, const char* name) {
+  std::size_t pos = 0;
+  int result = 0;
+  try {
+    result = std::stoi(value, &pos);
+  } catch (const std::invalid_argument&) {
+    throw std::invalid_argument(
+        std::string("Invalid ") + name + " argument: '" + value +
+        "'; expected an integer.");
+  } catch (const std::out_of_range&) {
+    throw std::out_of_range(
+        std::string("Invalid ") + name + " argument: '" + value +
+        "'; value out of range.");
+  }
+  if (pos != std::string(value).size()) {
+    throw std::invalid_argument(
+        std::string("Invalid ") + name + " argument: '" + value +
+        "'; expected an integer.");
+  }
+  return result;
+}
+
 DemoConfig parse_args(int argc, char** argv) {
   if (argc < 3) {
     throw std::invalid_argument(
@@ -197,10 +219,10 @@ DemoConfig parse_args(int argc, char** argv) {
     cfg.model_name = argv[3];
   }
   if (argc > 4) {
-    cfg.device_index = std::stoi(argv[4]);
+    cfg.device_index = parse_int_arg(argv[4], "device_index");
   }
   if (argc > 5) {
-    cfg.batch_index = std::stoi(argv[5]);
+    cfg.batch_index = parse_int_arg(argv[5], "batch_index");
   }
   cfg.inference_emb_ops_path =
       (argc > 6) ? argv[6] : infer_default_inference_emb_ops_path(argv[0]);
