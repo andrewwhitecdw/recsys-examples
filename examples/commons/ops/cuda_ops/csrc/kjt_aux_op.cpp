@@ -93,7 +93,7 @@ at::Tensor lengths_reduce_dim1_impl(
   }
 
   const int64_t batch = lengths_1d.numel() / num_splits;
-  return lengths_1d.view({num_splits, batch}).sum(1);
+  return lengths_1d.reshape({num_splits, batch}).sum(1);
 }
 
 at::Tensor lengths_reduce_dim1_cpu(const at::Tensor& lengths_1d, int64_t num_splits) {
