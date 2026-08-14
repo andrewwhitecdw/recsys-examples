@@ -347,9 +347,18 @@ class GRHTTPServingAdapter:
         if route == ("flush_cache",) and method in {"GET", "POST"}:
             # SGLang query key is `timeout` (io_struct field is timeout_s).
             timeout = payload.get("timeout")
-            result = self.facade.flush_cache(
-                timeout_s=float(timeout) if timeout is not None else None
-            )
+            if timeout is not None:
+                try:
+                    timeout = float(timeout)
+                except (TypeError, ValueError) as exc:
+                    raise ValueError(
+                        f"timeout must be a number: {exc}"
+                    ) from exc
+                if timeout < 0:
+                    raise ValueError(
+                        f"timeout must be non-negative, got {timeout}"
+                    )
+            result = self.facade.flush_cache(timeout_s=timeout)
             # SGLang's flush_cache returns 200 only when idle; 400
             # (running/waiting) is what slime's flush retry loop keys on.
             return _ok(result, status=200 if result.get("success", True) else 400)
