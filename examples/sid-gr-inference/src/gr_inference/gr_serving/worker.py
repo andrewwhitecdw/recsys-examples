@@ -87,9 +87,9 @@ class GRServingWorker:
         return request.request_id
 
     def submit_many(self, requests: tuple[GRServingRequest, ...]) -> tuple[str, ...]:
-        request_ids = tuple(request.request_id for request in requests)
         for request in requests:
             request.validate()
+        request_ids = tuple(request.request_id for request in requests)
         with self._pending_lock:
             self._pending_submissions.extend(requests)
             self._worker_submitted_requests += len(requests)
