@@ -29,6 +29,12 @@ def _strip_padding_batch(batch, unpadded_batch_size):
         )
     batch.features = KeyedJaggedTensor.from_jt_dict(kjt_dict)
     batch.num_candidates = batch.num_candidates[:unpadded_batch_size]
+    labels = getattr(batch, "labels", None)
+    if labels is not None:
+        batch.labels = JaggedTensor.from_dense_lengths(
+            labels.to_padded_dense()[:unpadded_batch_size],
+            labels.lengths()[:unpadded_batch_size].long(),
+        )
     batch.actual_batch_size = unpadded_batch_size
     return batch
 
