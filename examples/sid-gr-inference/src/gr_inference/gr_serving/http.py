@@ -428,7 +428,17 @@ class GRHTTPServingAdapter:
                 "name is required",
                 code="validation_error",
             )
-        truncate_size = int(payload.get("truncate_size", 100) or 100)
+        raw_truncate_size = payload.get("truncate_size", 100) or 100
+        try:
+            truncate_size = int(raw_truncate_size)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                f"truncate_size must be an integer, got {raw_truncate_size!r}"
+            ) from exc
+        if truncate_size < 0:
+            raise ValueError(
+                f"truncate_size must be non-negative, got {truncate_size}"
+            )
         return _ok(
             self.facade.get_weights_by_name(str(name), truncate_size=truncate_size)
         )
