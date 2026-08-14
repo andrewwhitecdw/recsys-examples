@@ -616,7 +616,10 @@ class GRHTTPServingAdapter:
         if admission["queue_full"]:
             reasons.append("waiting_queue_full")
         if isinstance(worker, Mapping):
-            if not worker.get("running", False):
+            if (
+                not worker.get("running", False)
+                and not self.validation_policy.allow_manual_tick
+            ):
                 reasons.append("worker_not_running")
             if worker.get("last_error"):
                 reasons.append("worker_last_error")
