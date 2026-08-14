@@ -609,11 +609,8 @@ if nn is not None:
             next_input_norm: Any | None = None,
             return_next_normed: bool = False,
         ):
-            batch, seq_len, hidden_size = hidden_states.shape
-            if hidden_size != self.config.hidden_size:
-                raise ValueError(
-                    f"hidden size mismatch: expected {self.config.hidden_size}, got {hidden_size}"
-                )
+            batch, seq_len = hidden_states.shape[:2]
+            _validate_hidden_size(hidden_states, self.config.hidden_size)
 
             prefix = f"prefill.layer{self.layer_idx}"
             with _timed(timing_recorder, f"{prefix}.total"):
@@ -683,11 +680,8 @@ if nn is not None:
             prefix_len: int,
             timing_recorder: Any | None = None,
         ):
-            batch, suffix_len, hidden_size = hidden_states.shape
-            if hidden_size != self.config.hidden_size:
-                raise ValueError(
-                    f"hidden size mismatch: expected {self.config.hidden_size}, got {hidden_size}"
-                )
+            batch, suffix_len = hidden_states.shape[:2]
+            _validate_hidden_size(hidden_states, self.config.hidden_size)
             if prefix_len < 0 or prefix_len + suffix_len > context_kv.context_len:
                 raise ValueError("prefix/suffix lengths exceed ContextKV capacity")
 
@@ -757,11 +751,8 @@ if nn is not None:
             next_input_norm: Any | None = None,
             return_next_normed: bool = False,
         ):
-            batch, beam_width, hidden_size = hidden_states.shape
-            if hidden_size != self.config.hidden_size:
-                raise ValueError(
-                    f"hidden size mismatch: expected {self.config.hidden_size}, got {hidden_size}"
-                )
+            batch, beam_width = hidden_states.shape[:2]
+            _validate_hidden_size(hidden_states, self.config.hidden_size)
             if active_beam_width is None:
                 active_beam_width = generation.fixed_beam_width
             if beam_width != active_beam_width:
@@ -1072,6 +1063,14 @@ def _timed_fine(timing_recorder, name: str):
     if not _is_fine_timing(timing_recorder):
         return nullcontext()
     return _timed(timing_recorder, name)
+
+
+def _validate_hidden_size(hidden_states, expected_size: int) -> None:
+    hidden_size = hidden_states.shape[-1]
+    if hidden_size != expected_size:
+        raise ValueError(
+            f"hidden size mismatch: expected {expected_size}, got {hidden_size}"
+        )
 
 
 _FLASHINFER_NORM = None
