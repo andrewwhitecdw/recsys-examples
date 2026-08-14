@@ -1755,8 +1755,6 @@ def _apply_trtllm_fused_qk_norm_rope(
             qkv_flat,
             num_attention_heads,
             num_kv_heads,
-            num_kv_heads,
-            head_dim,
             head_dim,
             eps,
             q_norm_weight,
